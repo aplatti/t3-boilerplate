@@ -33,12 +33,11 @@ module.exports = function (grunt) {
       sass: {
         files: ['<%= config.app %>/styles/sass/{,*/}*.{scss,sass}'],
         tasks: ['sass']
-        // tasks: ['sass', 'newer:copy']
-      }
-      // templates: {
-      //   files: ['<%= config.app %>/templates/{,*/}*.hbs'],
-      //   tasks: ['handlebars', 'newer:copy']
-      // },
+      },
+      templates: {
+        files: ['<%= config.app %>/templates/{,*/}*.hbs'],
+        tasks: ['handlebars']
+      },
     },
 
     // Empties folders to start fresh
@@ -51,38 +50,39 @@ module.exports = function (grunt) {
           dot: true,
           src: [
             '<%= config.app %>/styles/main.css',
-            '<%= config.app %>/styles/main.css.map'
+            '<%= config.app %>/styles/main.css.map',
+            '<%= config.app %>/scripts/compiled-templates.js'
           ]
         }]
       },
     },
 
-    // handlebars: {
-    //   compile: {
-    //     options: {
-    //       namespace: 'Handlebars.Templates',
-    //       processName: function(filePath) { // input:  app/templates/AddressInputQuestion.hbs
-    //         var pieces = filePath.split("/");
-    //         return pieces[pieces.length - 1].replace(/\.hbs$/, ''); // output: AddressInputQuestion
-    //       },
-    //     },
-    //     files: {
-    //       '<%= config.dist %>/scripts/intakeTemplates.js': [ '<%= config.app %>/templates/*.hbs']
-    //     }
-    //   },
-    //   serve: {
-    //     options: {
-    //       namespace: 'Handlebars.Templates',
-    //       processName: function(filePath) { // input:  app/templates/AddressInputQuestion.hbs
-    //         var pieces = filePath.split("/");
-    //         return pieces[pieces.length - 1].replace(/\.hbs$/, ''); // output: AddressInputQuestion
-    //       }
-    //     },
-    //     files: {
-    //       '<%= config.app %>/scripts/intakeTemplates.js': [ '<%= config.app %>/templates/*.hbs']
-    //     }
-    //   }
-    // },
+    handlebars: {
+      compile: {
+        options: {
+          namespace: 'Handlebars.Templates',
+          processName: function(filePath) { // input:  app/templates/AddressInputQuestion.hbs
+            var pieces = filePath.split("/");
+            return pieces[pieces.length - 1].replace(/\.hbs$/, ''); // output: AddressInputQuestion
+          },
+        },
+        files: {
+          '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/templates/*.hbs']
+        }
+      },
+      serve: {
+        options: {
+          namespace: 'Handlebars.Templates',
+          processName: function(filePath) { // input:  app/templates/AddressInputQuestion.hbs
+            var pieces = filePath.split("/");
+            return pieces[pieces.length - 1].replace(/\.hbs$/, ''); // output: AddressInputQuestion
+          }
+        },
+        files: {
+          '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/templates/*.hbs']
+        }
+      }
+    },
 
 
     // Compiles Sass to CSS and generates necessary files if requested
@@ -164,7 +164,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean',
     'sass',
-    // 'handlebars',
+    'handlebars',
     'wiredep',
     // 'copy:dist',
   ]);
