@@ -1,0 +1,38 @@
+/**
+ * base.scss
+ *
+ * This file contains default styles for standard HTML elements on the page.
+*  It assumes you are using normalize.css as a CSS Reset (http://necolas.github.io/normalize.css/)
+ *
+ * Notes:
+ *  - There should be no need to use !important in this file
+ *  - All seletors should only use HTML elements, attribute selectors, or psuedo classes
+ *  - Class and ID selectors should not be necessary in this file
+ */
+
+/* apply a natural box layout model to all elements, but allowing components to change */
+/* More info on border-box model: http://www.paulirish.com/2012/box-sizing-border-box-ftw/ */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  background-image: linear-gradient(#d7d7d7, #adadad);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-size: 12px;
+}
+
+input {
+    vertical-align: middle;
+}
+
+

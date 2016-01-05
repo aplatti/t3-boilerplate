@@ -1,0 +1,18 @@
+/**
+ * states.scss
+ *
+ * States describe how modules or layouts look in particular states and override all other styles.
+ * This file contains global state rules.  Module specific states will be found in the module files.
+ * States generally imply a javascript dependency which applies the state classes to the elements.
+ * The state styles can describe how a module looks on varous screen sizes, or from different views.
+ *
+ * Notes:
+ *   - State class names should begin with "is_" prefix (ie ".is-selected")
+ *   - States are built to stand alone and generally use only a single class selector
+ *   - Use of !important is acceptable in this file (but only use it when necessary)
+ *   - States speficic to modules should not be defined here.  They belong in the module files.
+ */
+
+.is-hidden {
+    display: none !important;
+}
