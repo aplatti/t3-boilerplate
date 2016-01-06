@@ -40,6 +40,34 @@ module.exports = function (grunt) {
       },
     },
 
+
+    browserSync: {
+      options: {
+        notify: false,
+        background: true,
+        watchOptions: {
+          ignored: ''
+        }
+      },
+      livereload: {
+        options: {
+          files: [
+            '<%= config.app %>/{,*/}*.html',
+            '<%= config.app %>/styles/{,*/}*.css',
+            '<%= config.app %>/images/{,*/}*',
+            '<%= config.app %>/scripts/{,*/}*.js'
+          ],
+          port: 9000,
+          server: {
+            baseDir: ['<%= config.app %>', config.app],
+            routes: {
+              '/bower_components': './bower_components'
+            }
+          }
+        }
+      }
+    },
+
     // Empties folders to start fresh
     clean: {
       options: {
@@ -174,9 +202,13 @@ module.exports = function (grunt) {
   ]);
 
 
+  
   grunt.registerTask('serve', 'Prepares files for main serve task', [
-    'sass:dist',
-    'handlebars:serve',
-    'wiredep'
+    'clean',
+    'sass',
+    'handlebars',
+    'wiredep',
+    'browserSync:livereload',
+    'watch'
   ]);
 };
