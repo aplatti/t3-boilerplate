@@ -19,6 +19,11 @@
   "authors": [
     "Adam Platti <adam@webuidude.com>"
   ],
+  "overrides": {
+    "t3js": {
+      "main": "dist/t3.min.js"
+    }
+  },
   "moduleType": [],
   "license": "MIT",
   "homepage": ""
