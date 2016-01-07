@@ -97,18 +97,6 @@ module.exports = function (grunt) {
         files: {
           '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/templates/*.hbs']
         }
-      },
-      serve: {
-        options: {
-          namespace: 'Handlebars.Templates',
-          processName: function(filePath) { // input:  app/templates/AddressInputQuestion.hbs
-            var pieces = filePath.split("/");
-            return pieces[pieces.length - 1].replace(/\.hbs$/, ''); // output: AddressInputQuestion
-          }
-        },
-        files: {
-          '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/templates/*.hbs']
-        }
       }
     },
 
