@@ -79,7 +79,8 @@ module.exports = function (grunt) {
           src: [
             '<%= config.app %>/styles/main.css',
             '<%= config.app %>/styles/main.css.map',
-            '<%= config.app %>/scripts/compiled-templates.js'
+            '<%= config.app %>/scripts/compiled-templates.js',
+            '<%= config.dist %>'
           ]
         }]
       },
