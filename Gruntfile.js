@@ -14,7 +14,7 @@ module.exports = function (grunt) {
   // Configurable options
   var config = {
     app: './app',
-    // dist: './dist',
+    dist: './dist',
     minimumCoverage: 90 // percents
   };
 
@@ -149,40 +149,58 @@ module.exports = function (grunt) {
       }
     },
 
-  //   // Copies remaining files to places other tasks can use
-  //   ,copy: {
-  //     dist: {
-  //       files: [{
-  //         expand: true,
-  //         dot: true,
-  //         cwd: '<%= config.app %>',
-  //         dest: '<%= config.dist %>',
-  //         src: [
-  //           'styles/*.css',
-  //           'images/{,*/}*',
-  //         ]
-  //       },
-  //       {
-  //         expand: true,
-  //         dot: true,
-  //         cwd: '<%= config.app %>',
-  //         dest: '<%= config.dist %>',
-  //         src: [
-  //           'scripts/localization/*.js'
-  //         ]
-  //       }]
-  //     }
-  //   },
+    useminPrepare: {
+      options: {
+        dest: '<% config.dist %>'
+      },
+      html: '<%= config.app %>/index.html'
+    },
 
+    usemin: {
+      options: {
+        assetsDirs: [
+          '.tmp',
+          '<%= config.dist %>',
+          '<%= config.dist %>/scripts',
+          '<%= config.dist %>/styles',
+          '.'
+        ]
+      },
+      html: ['<%= config.dist %>/{,*/}*.html']
+    },
+
+    // Copies remaining files to places other tasks can use
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= config.app %>',
+          dest: '<%= config.dist %>',
+          src: [
+            'styles/*.css',
+            'styles/*.map',
+            'images/{,*/}*',
+            'fonts/{,*}*',
+            '{,*/}*.html'
+          ]
+        }]
+      }
+    },
   });
 
 
   grunt.registerTask('build', [
     'clean',
+    'wiredep',
+    'useminPrepare',
     'sass',
     'handlebars',
-    'wiredep',
-    // 'copy:dist',
+    'concat',
+    'uglify',
+    'cssmin',
+    'copy:dist',
+    'usemin'
   ]);
 
   grunt.registerTask('default', [

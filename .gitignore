@@ -3,3 +3,5 @@ bower_components
 *sublime*
 app/styles/main.css*
 app/scripts/compiled-templates.js
+dist
+.tmp
