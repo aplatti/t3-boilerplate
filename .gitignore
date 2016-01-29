@@ -4,4 +4,5 @@ bower_components
 app/styles/main.css*
 app/scripts/compiled-templates.js
 dist
+doc
 .tmp

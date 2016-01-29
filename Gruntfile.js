@@ -61,7 +61,8 @@ module.exports = function (grunt) {
           server: {
             baseDir: ['<%= config.app %>', config.app],
             routes: {
-              '/bower_components': './bower_components'
+              '/bower_components': './bower_components',
+              '/doc': './doc'
             }
           }
         }
@@ -188,7 +189,22 @@ module.exports = function (grunt) {
         }]
       }
     },
+    
+    jsdoc : {
+      dist : {
+        src: ['<%= config.app %>/scripts/{,*/}*.js'],
+        options: {
+          configure: './jsdoc.conf',
+          'private': true
+        }
+      }
+    }
   });
+
+
+  grunt.registerTask('doc', [
+    'jsdoc:dist'
+  ]);
 
 
   grunt.registerTask('build', [
