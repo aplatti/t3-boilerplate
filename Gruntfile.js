@@ -31,11 +31,11 @@ module.exports = function (grunt) {
         tasks: ['wiredep']
       },
       sass: {
-        files: ['<%= config.app %>/styles/sass/{,*/}*.{scss,sass}'],
+        files: ['<%= config.app %>/styles/sass/**/*.{scss,sass}'],
         tasks: ['sass']
       },
       templates: {
-        files: ['<%= config.app %>/templates/{,*/}*.hbs'],
+        files: ['<%= config.app %>/templates/**/*.hbs'],
         tasks: ['handlebars']
       },
     },
@@ -52,10 +52,10 @@ module.exports = function (grunt) {
       livereload: {
         options: {
           files: [
-            '<%= config.app %>/{,*/}*.html',
-            '<%= config.app %>/styles/{,*/}*.css',
-            '<%= config.app %>/images/{,*/}*',
-            '<%= config.app %>/scripts/{,*/}*.js'
+            '<%= config.app %>/**/*.html',
+            '<%= config.app %>/styles/**/*.css',
+            '<%= config.app %>/images/**/*',
+            '<%= config.app %>/scripts/**/*.js'
           ],
           port: 9000,
           server: {

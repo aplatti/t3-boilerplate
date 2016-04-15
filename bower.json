@@ -11,8 +11,8 @@
     "tests"
   ],
   "dependencies": {
-    "secure-handlebars": "git@github.com:yahoo/secure-handlebars.git#~1.2.0",
-    "t3js": "git@github.com:box/t3js.git#~2.0.2",
+    "secure-handlebars": "git://github.com/yahoo/secure-handlebars.git#~1.2.0",
+    "t3js": "git://github.com/box/t3js.git#~2.0.2",
     "jquery": "~2.1.4",
     "normalize-css": "~3.0.3"
   },
