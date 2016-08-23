@@ -30,14 +30,31 @@ module.exports = function (grunt) {
         files: ['bower.json'],
         tasks: ['wiredep']
       },
-      sass: {
-        files: ['<%= config.app %>/styles/sass/**/*.{scss,sass}'],
-        tasks: ['sass']
+      scss: {
+        files: ['<%= config.app %>/**/*.scss'],
+        tasks: ['scss-build'],
+        options: {
+          livereload: true,
+          event: ['all']
+        }
       },
       templates: {
-        files: ['<%= config.app %>/templates/**/*.hbs'],
-        tasks: ['handlebars']
+        files: ['<%= config.app %>/**/*.hbs'],
+        tasks: ['handlebars'],
+        options: {
+          livereload: true,
+          event: ['all']
+        }
       },
+      //run injector:js task when file inside 'app' folder added or deleted
+      js_injector: {
+        files: ['<%= config.app %>/**/*.js'],
+        tasks: ['injector:js'],
+        options: {
+          livereload: true,
+          event: ['added', 'deleted']
+        }
+      }
     },
 
 
@@ -53,9 +70,9 @@ module.exports = function (grunt) {
         options: {
           files: [
             '<%= config.app %>/**/*.html',
-            '<%= config.app %>/styles/**/*.css',
+            '<%= config.app %>/**/*.css',
             '<%= config.app %>/images/**/*',
-            '<%= config.app %>/scripts/**/*.js'
+            '<%= config.app %>/**/*.js'
           ],
           port: 9000,
           server: {
@@ -81,7 +98,8 @@ module.exports = function (grunt) {
             '<%= config.app %>/styles/main.css',
             '<%= config.app %>/styles/main.css.map',
             '<%= config.app %>/scripts/compiled-templates.js',
-            '<%= config.dist %>'
+            config.dist,
+            '.tmp'
           ]
         }]
       },
@@ -97,7 +115,7 @@ module.exports = function (grunt) {
           },
         },
         files: {
-          '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/templates/*.hbs']
+          '<%= config.app %>/scripts/compiled-templates.js': [ '<%= config.app %>/**/*.hbs']
         }
       }
     },
@@ -114,7 +132,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          '<%= config.app %>/styles/main.css': '<%= config.app %>/styles/sass/master.scss',
+          '<%= config.app %>/styles/main.css': '<%= config.app %>/styles/scss/master.scss',
         }
       }
     },
@@ -129,8 +147,8 @@ module.exports = function (grunt) {
         src: ['<%= config.app %>/index.html'],
         ignorePath: /^(\.\.\/)*\.\./
       },
-      sass: {
-        src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
+      scss: {
+        src: ['<%= config.app %>/**/*.scss'],
         ignorePath: /^(\.\.\/)+/
       },
       js: {
@@ -151,9 +169,52 @@ module.exports = function (grunt) {
       }
     },
 
+    //parse file to inject references
+    injector: {
+      options: {},
+
+      scss: {
+        options: {
+          template: '<%= config.app %>/styles/scss/master.scss',
+          ignorePath: ['<%= config.app %>/styles/scss', config.app],
+          starttag: '/** injector:{{ext}} */',
+          endtag: '/** endinjector */'
+          ,transform: function(file) {
+            if (file.indexOf('/modules/') === 0) {
+              // scss files in the /app/styles/modules directory
+              return ',"' + file.substring(1).replace(/\.scss$/, '') + '"';  // substring(1) chopps off leading "/"
+            } else {
+              // all other scss files
+              return ',"' + '../..' + file.replace(/\.scss$/,'') + '"';
+
+              grunt.log.ok(file);
+            }
+            // var newFilePath = (',"../..' + file + '"').replace('../../styles/', '');
+            // grunt.log.ok('injector scss:' + file + ' => ' + newFilePath);
+            // return newFilePath;
+          }
+        },
+        files: {
+          '<%= config.app %>/styles/scss/master.scss': ['<%= config.app%>/**/*.scss', '!<%= config.app %>/styles/scss/{base,master,mixins,reset,states,variables}.scss']
+        }
+      },
+
+      //inject script file references into 'index.html'
+      js: {
+        options: {
+          template: '<%= config.app %>/index.html',
+          ignorePath: config.app
+        },
+        files: {
+          '<%= config.app %>/index.html': ['<%= config.app %>/**/*.js', '!<%= config.app %>/scripts/{main,compiled-templates}.js']
+        }
+      }
+    },
+
+
     useminPrepare: {
       options: {
-        dest: '<% config.dist %>'
+        dest: config.dist
       },
       html: '<%= config.app %>/index.html'
     },
@@ -161,14 +222,10 @@ module.exports = function (grunt) {
     usemin: {
       options: {
         assetsDirs: [
-          '.tmp',
-          '<%= config.dist %>',
-          '<%= config.dist %>/scripts',
-          '<%= config.dist %>/styles',
-          '.'
+          '.tmp/concat'
         ]
       },
-      html: ['<%= config.dist %>/{,*/}*.html']
+      html: ['<%= config.dist %>/**/*.html']
     },
 
     // Copies remaining files to places other tasks can use
@@ -177,14 +234,12 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           dot: true,
-          cwd: '<%= config.app %>',
-          dest: '<%= config.dist %>',
+          cwd: config.app,
+          dest: config.dist,
           src: [
-            'styles/*.css',
-            'styles/*.map',
-            'images/{,*/}*',
-            'fonts/{,*}*',
-            '{,*/}*.html'
+            'images/**/*',
+            'fonts/**/*',
+            '**/*.html'
           ]
         }]
       }
@@ -192,7 +247,7 @@ module.exports = function (grunt) {
     
     jsdoc : {
       dist : {
-        src: ['<%= config.app %>/scripts/{,*/}*.js'],
+        src: ['<%= config.app %>/**/*.js'],
         options: {
           configure: './jsdoc.conf',
           'private': true
@@ -206,16 +261,21 @@ module.exports = function (grunt) {
     'jsdoc:dist'
   ]);
 
+  grunt.registerTask('scss-build', [
+    'injector:scss', // dynamically create /app/assets/styles/master.scss with imports for all scss files
+    'sass'          // compiles /app/assets/styles/master.scss into /app/main.css and /app/main.css.map
+  ]);
 
   grunt.registerTask('build', [
     'clean',
     'wiredep',
     'useminPrepare',
-    'sass',
+    'scss-build',
     'handlebars',
-    'concat',
-    'uglify',
-    'cssmin',
+    'injector',      // dynamically add script tags for all JS files to /app/index.html
+    'concat:generated',
+    'uglify:generated',
+    'cssmin:generated',
     'copy:dist',
     'usemin'
   ]);
@@ -228,9 +288,11 @@ module.exports = function (grunt) {
   
   grunt.registerTask('serve', 'Prepares files for main serve task', [
     'clean',
-    'sass',
-    'handlebars',
     'wiredep',
+    'useminPrepare',
+    'scss-build',
+    'handlebars',
+    'injector',
     'browserSync:livereload',
     'watch'
   ]);

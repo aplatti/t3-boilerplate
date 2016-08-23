@@ -16,21 +16,29 @@
   </head>
   <body>
 
-    <h1>And so it begins...</h1>
+    <div id="content"></div>
     
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <script src="/bower_components/secure-handlebars/dist/secure-handlebars.min.js"></script>
     <script src="/bower_components/t3js/dist/t3.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/handlebars/handlebars.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
-
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/compiled-templates.js"></script>
-    <script src="scripts/main.js"></script>
+    <!-- JS -->
+    <!-- build:js(app) scripts/main.js -->
+    <!-- AUTO-GENERATED. DO NOT UPDATE THIS "INJECTOR" BLOCK CONTENT -->
+    <!-- injector:js -->
+    <script src="/scripts/modules/main/main.js"></script>
+    <script src="/scripts/services/router.js"></script>
+    <script src="/scripts/services/templates.js"></script>
+    <!-- endinjector -->
     <!-- endbuild -->
+
+    <script src="/scripts/compiled-templates.js"></script>
+    <script src="/scripts/main.js"></script>
+
 
   </body>
 </html>
