@@ -11,6 +11,8 @@ module.exports = function (grunt) {
       useminPrepare: 'grunt-usemin'
   });
 
+  var historyApiFallback = require('connect-history-api-fallback');
+
   // Configurable options
   var config = {
     app: './app',
@@ -33,6 +35,13 @@ module.exports = function (grunt) {
       scss: {
         files: ['<%= config.app %>/**/*.scss'],
         tasks: ['scss-build'],
+        options: {
+          livereload: true,
+          event: ['all']
+        }
+      },
+      img: {
+        files: ['<%= config.app %>/img/**/*'],
         options: {
           livereload: true,
           event: ['all']
@@ -77,6 +86,9 @@ module.exports = function (grunt) {
           port: 9000,
           server: {
             baseDir: ['<%= config.app %>', config.app],
+            middleware: [
+              historyApiFallback()
+            ],
             routes: {
               '/bower_components': './bower_components',
               '/doc': './doc'
@@ -176,16 +188,17 @@ module.exports = function (grunt) {
       scss: {
         options: {
           template: '<%= config.app %>/styles/scss/master.scss',
-          ignorePath: ['<%= config.app %>/styles/scss', config.app],
+          // ignorePath: ['<%= config.app %>/styles/scss', config.app],
           starttag: '/** injector:{{ext}} */',
           endtag: '/** endinjector */'
           ,transform: function(file) {
-            if (file.indexOf('/modules/') === 0) {
+            grunt.log.ok(file);
+            if (file.indexOf('/styles/scss/modules/') > 0) {
               // scss files in the /app/styles/modules directory
-              return ',"' + file.substring(1).replace(/\.scss$/, '') + '"';  // substring(1) chopps off leading "/"
+              return ',"' + file.substring(1).replace(/\.scss$/, '').replace(/app\/styles\/scss\//, '') + '"';  // substring(1) chopps off leading "/"
             } else {
               // all other scss files
-              return ',"' + '../..' + file.replace(/\.scss$/,'') + '"';
+              return ',"' + '../../..' + file.replace(/\.scss$/,'') + '"';
 
               grunt.log.ok(file);
             }
